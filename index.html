@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<title>IIDX Tier編集</title>
+		<meta charset="UTF-8"/>
+		<link rel="stylesheet" type="text/css" href="./style.css">
+		<script type="text/javascript" src="./script.js"></script>
+	</head>
+	<body onload="init();" style="user-select:none;">
+		<!--spinner-->
+		<div id="spinner">
+			<section class="spinnerContainer">
+				<div class="spinner"></div>
+			</section>
+		</div>
+		<div style="padding:0.5rem;font-size:1.5rem;">
+			LV<select id="lv" value="8" onchange="displayTargetData();" style="margin-left:0.25rem;font-size:1.5rem;">
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+			</select>
+			<div style="float:right">
+				<button type="button" onclick="localStorage.removeItem('IIDXMusicList');getMusicList();">楽曲データ再取得</button>
+<!--
+				<button type="button" onclick="localStorage.removeItem('tieredList');getTieredList();">Tier表再取得</button>
+-->
+			</div>
+		</div>
+		<div style="display:flex;justify-content:flex-start;">
+			<div style="width:20em;">
+				<div id="TierArea"></div>
+			</div>
+			<div style="width:50%;">
+				<div id="TieredTitle" class="header">Tierをクリック</div>
+				<div id="TieredArea" ondragover="dragoverHandler();" ondrop="dropTieredHandler();"></div>
+			</div>
+			<div style="width:50%;">
+				<div class="header">まだ決まってないやつ</div>
+				<div id="UntieredArea" ondragover="dragoverHandler();" ondrop="dropUntieredHandler();"></div>
+			</div>
+		</div>
+		<div id="searchResult" style="border:2px solid #505050;display:none;position:absolute;bottom:4.4em;background-color:#D0D0D0;width:50vw;padding:0.2em;">
+			<div style="display:flex;justify-content:flex-end;" onclick="document.getElementById('searchResult').style.display='none';">
+				<div style="cursor:pointer;border-radius:4px;padding-left:0.2em;padding-right:0.2em;font-size:1.1em;background-color:white;">×</div>
+			</div>
+			<table id="resultList" style="width:100%;font-size:1.1em;"></table>
+		</div>
+		<div class="footer">
+			<div style="display:flex;justify-content:space-between;padding-left:0.5em;padding-right:0.5em;">
+				<div>
+					<span style="font-size:1.2em;">曲名検索</span>&nbsp;<input id="searchCond" type="text" style="width:20em;font-size:1.2em;">
+					<button type="button" onclick="search();" style="width:4em;">検索</button>
+				</div>
+				<div>
+					<button type="button" onclick="restore();" style="width:8rem;">やり直す</button>
+					<button type="button" onclick="save();" style="width:8rem;">保存！</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
