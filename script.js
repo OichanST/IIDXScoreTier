@@ -7,15 +7,14 @@ var untieredList;
 // Apps Script URL
 const gsAPIUrl = "https://script.google.com/macros/s/AKfycbxcoa3GeaBtHgPHYkgOxmeDlT1JeJeQYsx4LzV-bics-1GGKzkp8KFAmIILtxNxwng/exec";
 // Tierリスト
-const tierList = [1,2,3,4,5,6];
+const tierList = ["S","A","B","C","D"];
 // Tier配色テーブル
 const tierColorTable = {
-	1:"#FF0000",
-	2:"#FF9000",
-	3:"#FFFF00",
-	4:"#00FF00",
-	5:"#00FFFF",
-	6:"#00C0FF"
+	S:"#FF4040",
+	A:"#FFA500",
+	B:"#FFD700",
+	C:"#32CD32",
+	D:"#1E90FF"
 };
 
 
@@ -124,7 +123,7 @@ function getTieredList(){
  * 楽曲データ取得後の処理
  */
 function displayTargetData(){
-
+	// スピナー表示
 	document.getElementById("spinner").style.display = "none";
 	// 選択されたLVに該当する楽曲リスト
 	const targetLvList = new Array();
@@ -195,6 +194,14 @@ function displayTargetData(){
 			untieredList.push(rec);
 		}
 	}
+	// 選択されているTier表示領域を取得
+	const header = document.getElementById("TieredTitle");
+	// 選択されているTier表示領域を更新
+	header.innerText = "Tier " + tierList[0];
+	// 選択されたTierに応じて配色変更
+	header.style.backgroundColor = tierColorTable[tierList[0]];
+	// Tier決定済リストの表示更新
+	displayTieredList();
 	// Tier決定済リストの表示
 	displayTieredList();
 	// Tier未決リストの表示

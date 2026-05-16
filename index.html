@@ -13,7 +13,7 @@
 				<div class="spinner"></div>
 			</section>
 		</div>
-		<div style="padding:0.5rem;font-size:1.5rem;">
+		<div style="background-color:#D0D0D0;padding:0.5rem;font-size:1.5rem;">
 			LV<select id="lv" value="8" onchange="displayTargetData();" style="margin-left:0.25rem;font-size:1.5rem;">
 				<option value="8">8</option>
 				<option value="9">9</option>
@@ -48,9 +48,10 @@
 			<table id="resultList" style="width:100%;font-size:1.1em;"></table>
 		</div>
 		<div class="footer">
-			<div style="display:flex;justify-content:space-between;padding-left:0.5em;padding-right:0.5em;">
+			<div style="display:flex;justify-content:space-between;align-items:center;padding-left:0.5em;padding-right:0.5em;">
 				<div>
-					<span style="font-size:1.2em;">曲名検索</span>&nbsp;<input id="searchCond" type="text" style="width:20em;font-size:1.2em;">
+					<span style="font-size:1.2rem;margin-right:0.3rem;">曲名検索</span>
+					<span><input id="searchCond" type="text" style="width:25rem;height:1.75rem;font-size:1.3rem;"></span>
 					<button type="button" onclick="search();" style="width:4em;">検索</button>
 				</div>
 				<div>
