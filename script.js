@@ -16,6 +16,8 @@ const tierColorTable = [
 	"#32CD32",
 	"#1E90FF"
 ];
+// Tier別最大件数
+const tieredMaxSize = 10;
 
 /**
  * 初期表示処理
@@ -251,6 +253,8 @@ function displayTieredList(){
 	const lv = document.getElementById("lv").value;
 	// 現在選択されているTierを取得
 	const nowTier = document.getElementById("TieredTitle").innerText;
+
+	let count = 0;
 	// 未決リストループ
 	for(rec of tieredList){
 		if(rec.LV == lv && rec.Tier == nowTier){
@@ -324,8 +328,12 @@ function displayTieredList(){
 			}
 			// Tier表示領域へ追加
 			tieredArea.appendChild(dv);
+
+			count++;
 		}
 	}
+
+	document.getElementById("count").innerText = count + "/" + tieredMaxSize;
 }
 
 /**
