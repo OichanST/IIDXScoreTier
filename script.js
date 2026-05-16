@@ -7,53 +7,58 @@ var untieredList;
 // Apps Script URL
 const gsAPIUrl = "https://script.google.com/macros/s/AKfycbxcoa3GeaBtHgPHYkgOxmeDlT1JeJeQYsx4LzV-bics-1GGKzkp8KFAmIILtxNxwng/exec";
 // Tierリスト
-const tierList = ["S","A","B","C","D"];
+var tierList;
 // Tier配色テーブル
-const tierColorTable = {
-	S:"#FF4040",
-	A:"#FFA500",
-	B:"#FFD700",
-	C:"#32CD32",
-	D:"#1E90FF"
-};
-
+const tierColorTable = [
+	"#FF4040",
+	"#FFA500",
+	"#FFD700",
+	"#32CD32",
+	"#1E90FF"
+];
 
 /**
  * 初期表示処理
  */
 function init(){
-	// Tier表示領域取得
-	const tierArea = document.getElementById("TierArea");
-	// 一旦クリア
-	tierArea.innerHTML = null;
-	// Tierリストループ
-	for(const tier of tierList){
-		// 行生成
-		const div = document.createElement("div");
-		// 表示用にクラス付与
-		div.classList.add("tier");
-		// 背景色設定
-		div.style.backgroundColor = tierColorTable[tier];
-		// テキスト生成
-		div.innerText = "Tier " + tier;
-		// クリックイベントの追加
-		div.onclick = (evt) => {
-			// 選択されているTier表示領域を取得
-			const header = document.getElementById("TieredTitle");
-			// 選択されたTierを取得
-			const tier = evt.target.innerText;
-			// 選択されているTier表示領域を更新
-			header.innerText = tier;
-			// 選択されたTierに応じて配色変更
-			header.style.backgroundColor = tierColorTable[tier.replace("Tier ", "")];
-			// Tier決定済リストの表示更新
-			displayTieredList();
-		};
-		// 行追加
-		tierArea.appendChild(div);
-	}
-	// 楽曲リストの取得
-	getMusicList();
+	fetch(gsAPIUrl + "?t=l").
+　　then(response => response.json()).
+	then(data => {
+		// Tierリストを初期設定
+		tierList = data;
+		// Tier表示領域取得
+		const tierArea = document.getElementById("TierArea");
+		// 一旦クリア
+		tierArea.innerHTML = null;
+		// Tierリストループ
+		for(const tier of tierList){
+			// 行生成
+			const div = document.createElement("div");
+			// 表示用にクラス付与
+			div.classList.add("tier");
+			// 背景色設定
+			div.style.backgroundColor = tierColorTable[tierList.indexOf(tier)];
+			// テキスト生成
+			div.innerText = tier;
+			// クリックイベントの追加
+			div.onclick = (evt) => {
+				// 選択されているTier表示領域を取得
+				const header = document.getElementById("TieredTitle");
+				// 選択されたTierを取得
+				const tier = evt.target.innerText;
+				// 選択されているTier表示領域を更新
+				header.innerText = tier;
+				// 選択されたTierに応じて配色変更
+				header.parentNode.style.backgroundColor = tierColorTable[tierList.indexOf(tier)];
+				// Tier決定済リストの表示更新
+				displayTieredList();
+			};
+			// 行追加
+			tierArea.appendChild(div);
+		}
+		// 楽曲リストの取得
+		getMusicList();
+	});
 }
 
 /**
@@ -131,6 +136,7 @@ function displayTargetData(){
 	const lv = document.getElementById("lv").value;
 	// 楽曲データループ
 	for(const rec of musicList){
+/**
 		// BEGINNERが対応している　※多分ないけど一応
 		if(rec.BEGINNER == lv){
 			targetLvList.push(
@@ -161,6 +167,7 @@ function displayTargetData(){
 				}
 			);
 		}
+**/
 		// ANOTHER
 		if(rec.ANOTHER == lv){
 			targetLvList.push(
@@ -197,9 +204,9 @@ function displayTargetData(){
 	// 選択されているTier表示領域を取得
 	const header = document.getElementById("TieredTitle");
 	// 選択されているTier表示領域を更新
-	header.innerText = "Tier " + tierList[0];
+	header.innerText = tierList[0];
 	// 選択されたTierに応じて配色変更
-	header.style.backgroundColor = tierColorTable[tierList[0]];
+	header.parentNode.style.backgroundColor = tierColorTable[0];
 	// Tier決定済リストの表示更新
 	displayTieredList();
 	// Tier決定済リストの表示
@@ -243,7 +250,7 @@ function displayTieredList(){
 	// 選択されているLVを取得
 	const lv = document.getElementById("lv").value;
 	// 現在選択されているTierを取得
-	const nowTier = document.getElementById("TieredTitle").innerText.replace("Tier ", "");
+	const nowTier = document.getElementById("TieredTitle").innerText;
 	// 未決リストループ
 	for(rec of tieredList){
 		if(rec.LV == lv && rec.Tier == nowTier){
@@ -274,7 +281,7 @@ function displayTieredList(){
 						LV:evt.target.getAttribute("lv"),
 						TITLE:evt.target.getAttribute("title"),
 						SCORE:evt.target.getAttribute("score"),
-						Tier:document.getElementById("TieredTitle").innerText.replace("Tier ", "")
+						Tier:document.getElementById("TieredTitle").innerText
 					})
 				);
 			}
@@ -392,7 +399,7 @@ function displayUntieredList(){
 				}
 			}
 			// Tier変更
-			data.Tier = tier.replace("Tier ", "");
+			data.Tier = tier;
 			// 変更された旨をマーク
 			data["changed"] = true;
 			// Tier決定済リストへ追加
@@ -494,7 +501,7 @@ function dropTieredHandler(){
 			}
 		}
 		// ドロップ先のTierに変更
-		data.Tier = tier.replace("Tier ", "");
+		data.Tier = tier;
 		// 変更された旨をマーク
 		data["changed"] = true;
 		// Tier決定済リストへ追加
@@ -621,7 +628,7 @@ function search(){
 			const tr = document.createElement("tr");
 			const td1 = document.createElement("td");
 			if(rec.Tier && rec.Tier != ""){
-				td1.innerText = "Tier " + rec.Tier;
+				td1.innerText = rec.Tier;
 			}else{
 				td1.innerText = "未決";
 			}

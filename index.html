@@ -15,15 +15,14 @@
 		</div>
 		<div style="background-color:#D0D0D0;padding:0.5rem;font-size:1.5rem;">
 			LV<select id="lv" value="8" onchange="displayTargetData();" style="margin-left:0.25rem;font-size:1.5rem;">
-				<option value="8">8</option>
 				<option value="9">9</option>
 				<option value="10">10</option>
 				<option value="11">11</option>
 				<option value="12">12</option>
 			</select>
 			<div style="float:right">
-				<button type="button" onclick="localStorage.removeItem('IIDXMusicList');getMusicList();">楽曲データ再取得</button>
 <!--
+				<button type="button" onclick="localStorage.removeItem('IIDXMusicList');getMusicList();">楽曲データ再取得</button>
 				<button type="button" onclick="localStorage.removeItem('tieredList');getTieredList();">Tier表再取得</button>
 -->
 			</div>
@@ -33,7 +32,10 @@
 				<div id="TierArea"></div>
 			</div>
 			<div style="width:50%;">
-				<div id="TieredTitle" class="header">Tierをクリック</div>
+				<div style="display:flex;justify-content:center" class="header">
+					<div id="TieredTitle">Tierをクリック</div>
+					<div id="count"></div>
+				</div>
 				<div id="TieredArea" ondragover="dragoverHandler();" ondrop="dropTieredHandler();"></div>
 			</div>
 			<div style="width:50%;">
