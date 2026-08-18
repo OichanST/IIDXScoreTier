@@ -97,7 +97,6 @@ function getMusicList(){
 		});
 	// 取得できた場合
 	}else{
-		console.log(musicList);
 		// JSON変換
 		musicList = JSON.parse(musicList);
 		// 楽曲データ取得後の処理
