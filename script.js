@@ -1,23 +1,15 @@
 // 楽曲リスト
 var musicList;
+// Tierリスト
+var tierList;
 // Tier決定済リスト
 var tieredList;
 // Tier未決リスト
 var untieredList;
 // Apps Script URL
 const gsAPIUrl = "https://script.google.com/macros/s/AKfycbxcoa3GeaBtHgPHYkgOxmeDlT1JeJeQYsx4LzV-bics-1GGKzkp8KFAmIILtxNxwng/exec";
-// Tierリスト
-var tierList;
-// Tier配色テーブル
-const tierColorTable = [
-	"#FF4040",
-	"#FFA500",
-	"#FFD700",
-	"#32CD32",
-	"#1E90FF"
-];
 // Tier別最大件数
-const tieredMaxSize = 10;
+//const tieredMaxSize = 10;
 
 /**
  * 初期表示処理
@@ -39,19 +31,22 @@ function init(){
 			// 表示用にクラス付与
 			div.classList.add("tier");
 			// 背景色設定
-			div.style.backgroundColor = tierColorTable[tierList.indexOf(tier)];
+			div.style.backgroundColor = tier.color;
 			// テキスト生成
-			div.innerText = tier;
+//			div.innerText = tier;
+			div.innerText = tier.name.substring(0, tier.name.indexOf("（"));
 			// クリックイベントの追加
 			div.onclick = (evt) => {
 				// 選択されているTier表示領域を取得
 				const header = document.getElementById("TieredTitle");
 				// 選択されたTierを取得
-				const tier = evt.target.innerText;
+				const sel = evt.target.innerText;
+
+				const find = tierList.find(tier => tier.name.indexOf(sel) >= 0);
 				// 選択されているTier表示領域を更新
-				header.innerText = tier;
+				header.innerText = find.name;
 				// 選択されたTierに応じて配色変更
-				header.parentNode.style.backgroundColor = tierColorTable[tierList.indexOf(tier)];
+				header.parentNode.style.backgroundColor = find.color;
 				// Tier決定済リストの表示更新
 				displayTieredList();
 			};
@@ -71,17 +66,30 @@ function getMusicList(){
 	musicList = localStorage.getItem("IIDXMusicList");
 	// 取得できなかった場合
 	if(!musicList){
-
 		document.getElementById("spinner").style.display = "block";
 		// Apps Scriptを用いてGoogle Spread Sheetの楽曲データを持ってくる
 		fetch(gsAPIUrl + "?t=m").
 		then(response => response.json()).
 		then(data => {
 			console.log("MusicList get");
+			
+			minimizedData = new Array();
+			
+			// Quota Exceeded対策
+			for(rec of data){
+				minimizedData.push({
+					TITLE:rec.TITLE,
+					NORMAL:rec.NORMAL,
+					HYPER:rec.HYPER,
+					ANOTHER:rec.ANOTHER,
+					LEGGENDARIA:rec.LEGGENDARIA
+				});
+			}
+
 			// LocalStorageに退避
-			localStorage.setItem("IIDXMusicList", JSON.stringify(data));
+			localStorage.setItem("IIDXMusicList", JSON.stringify(minimizedData));
 			// グローバル変数に退避
-			musicList = data;
+			musicList = minimizedData;
 
 			document.getElementById("spinner").style.display = "none";
 			// 楽曲データ取得後の処理
@@ -89,6 +97,7 @@ function getMusicList(){
 		});
 	// 取得できた場合
 	}else{
+		console.log(musicList);
 		// JSON変換
 		musicList = JSON.parse(musicList);
 		// 楽曲データ取得後の処理
@@ -110,6 +119,7 @@ function getTieredList(){
 		then(response => response.json()).
 		then(data => {
 			console.log("TieredList get");
+			console.log(data);
 			localStorage.setItem("tieredList", JSON.stringify(data));
 			tieredList = data;
 
@@ -206,9 +216,9 @@ function displayTargetData(){
 	// 選択されているTier表示領域を取得
 	const header = document.getElementById("TieredTitle");
 	// 選択されているTier表示領域を更新
-	header.innerText = tierList[0];
+	header.innerText = tierList[0].name;
 	// 選択されたTierに応じて配色変更
-	header.parentNode.style.backgroundColor = tierColorTable[0];
+	header.parentNode.style.backgroundColor = tierList[0].color;
 	// Tier決定済リストの表示更新
 	displayTieredList();
 	// Tier決定済リストの表示
@@ -333,7 +343,7 @@ function displayTieredList(){
 		}
 	}
 
-	document.getElementById("count").innerText = count + "/" + tieredMaxSize;
+	//document.getElementById("count").innerText = count + "/" + tieredMaxSize;
 }
 
 /**
