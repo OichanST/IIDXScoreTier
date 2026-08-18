@@ -42,7 +42,7 @@ function init(){
 				// 選択されたTierを取得
 				const sel = evt.target.innerText;
 
-				const find = tierList.find(tier => tier.name.indexOf(sel) >= 0);
+				const find = tierList.find(tier => tier.name.substring(0, tier.name.indexOf("（")) == sel);
 				// 選択されているTier表示領域を更新
 				header.innerText = find.name;
 				// 選択されたTierに応じて配色変更
